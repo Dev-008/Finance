@@ -1,0 +1,728 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="google-site-verification" content="f-1RxrFyZLEtKycWu8XKedWd9uwtORIJaL5iquq2x9A" />
+    <title>Personal Finance Tracker</title>
+    
+    <!-- EmailJS Library for REAL Email Sending -->
+    <script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@3/dist/email.min.js"></script>
+    
+    <!-- External CSS -->
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <!-- Navigation Bar -->
+    <div class="navbar">
+        <div class="navbar-container">
+            <ul class="navbar-menu" id="navbar-menu">
+                <li><a onclick="handleNavigation('dashboard')">Dashboard</a></li>
+                <li><a onclick="handleNavigation('help')">Help</a></li>
+                <li><a onclick="handleNavigation('settings')">Settings</a></li>
+                <li id="logout-menu" style="display: none;"><a onclick="handleNavigation('logout')">Logout</a></li>
+            </ul>
+            <button class="menu-toggle" onclick="toggleMenu()">☰</button>
+            <div class="navbar-logo" onclick="handleNavigation('home')">
+                <span class="logo-icon">💰</span>
+                <span class="logo-text">FinTrack</span>
+            </div>
+        </div>
+    </div>
+
+    <div class="container">
+        <!-- Header -->
+        <div class="header">
+            <h1>Personal Finance Tracker</h1>
+            <p>Track expenses, plan savings, calculate investments</p>
+        </div>
+
+        <!-- Main Card -->
+        <div class="card">
+            <!-- Tabs -->
+            <div class="tabs" id="main-tabs">
+                <button class="tab active" onclick="showSection('signin')">Sign In</button>
+                <button class="tab" onclick="showSection('signup')">Sign Up</button>
+            </div>
+
+            <!-- Sign In Form -->
+            <div id="signin" class="form-section active">
+                <div class="form-group">
+                    <label>Username or Email</label>
+                    <div class="input-wrapper">
+                        <span class="input-icon">👤</span>
+                        <input type="text" id="signin-username" placeholder="Enter your username or email">
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label>Password</label>
+                    <div class="input-wrapper">
+                        <span class="input-icon">🔒</span>
+                        <input type="password" id="signin-password" placeholder="Enter your password">
+                        <button class="password-toggle" onclick="togglePassword('signin-password')">👁️</button>
+                    </div>
+                </div>
+
+                <div class="remember-forgot">
+                    <label>
+                        <input type="checkbox" id="remember-me"> Remember me
+                    </label>
+                    <a class="forgot-link" onclick="showSection('forgot')">Forgot Password?</a>
+                </div>
+
+                <button class="btn-primary" onclick="handleSignIn()">Sign In →</button>
+
+                <div class="divider">
+                    <span>Or continue with</span>
+                </div>
+
+                <div class="social-buttons">
+                    <button class="social-btn" onclick="handleGoogleSignIn()">
+                        <svg class="social-icon" viewBox="0 0 24 24">
+                            <path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/>
+                            <path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/>
+                            <path fill="#FBBC05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z"/>
+                            <path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"/>
+                        </svg>
+                        Sign in with Google
+                    </button>
+                    <button class="social-btn" onclick="handleMicrosoftSignIn()">
+                        <svg class="social-icon" viewBox="0 0 23 23">
+                            <path fill="#f35325" d="M0 0h11v11H0z"/>
+                            <path fill="#81bc06" d="M12 0h11v11H12z"/>
+                            <path fill="#05a6f0" d="M0 12h11v11H0z"/>
+                            <path fill="#ffba08" d="M12 12h11v11H12z"/>
+                        </svg>
+                        Sign in with Microsoft
+                    </button>
+                    <button class="social-btn" onclick="handleAppleSignIn()">
+                        <span class="social-icon">🍎</span>
+                        Sign in with Apple
+                    </button>
+                </div>
+            </div>
+
+            <!-- Sign Up Form -->
+            <div id="signup" class="form-section">
+                <div class="form-group">
+                    <label>Username</label>
+                    <div class="input-wrapper">
+                        <span class="input-icon">👤</span>
+                        <input type="text" id="signup-username" placeholder="Choose a username">
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label>Email Address</label>
+                    <div class="input-wrapper">
+                        <span class="input-icon">📧</span>
+                        <input type="email" id="signup-email" placeholder="Enter your email">
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label>Password</label>
+                    <div class="input-wrapper">
+                        <span class="input-icon">🔒</span>
+                        <input type="password" id="signup-password" placeholder="Create a password (min 8 characters)">
+                        <button class="password-toggle" onclick="togglePassword('signup-password')">👁️</button>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label>Confirm Password</label>
+                    <div class="input-wrapper">
+                        <span class="input-icon">🔒</span>
+                        <input type="password" id="signup-confirm" placeholder="Confirm your password">
+                        <button class="password-toggle" onclick="togglePassword('signup-confirm')">👁️</button>
+                    </div>
+                </div>
+
+                <div class="terms">
+                    <input type="checkbox" id="terms">
+                    <label for="terms">I agree to the Terms of Service and Privacy Policy. I understand I will receive a verification email.</label>
+                </div>
+
+                <button class="btn-primary" id="signup-btn" onclick="handleSignUp()">Create Account →</button>
+
+                <div class="divider">
+                    <span>Or continue with</span>
+                </div>
+
+                <div class="social-buttons">
+                    <button class="social-btn" onclick="handleGoogleSignIn()">
+                        <svg class="social-icon" viewBox="0 0 24 24">
+                            <path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/>
+                            <path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/>
+                            <path fill="#FBBC05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z"/>
+                            <path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"/>
+                        </svg>
+                        Sign up with Google
+                    </button>
+                    <button class="social-btn" onclick="handleMicrosoftSignIn()">
+                        <svg class="social-icon" viewBox="0 0 23 23">
+                            <path fill="#f35325" d="M0 0h11v11H0z"/>
+                            <path fill="#81bc06" d="M12 0h11v11H12z"/>
+                            <path fill="#05a6f0" d="M0 12h11v11H0z"/>
+                            <path fill="#ffba08" d="M12 12h11v11H12z"/>
+                        </svg>
+                        Sign up with Microsoft
+                    </button>
+                    <button class="social-btn" onclick="handleAppleSignIn()">
+                        <span class="social-icon">🍎</span>
+                        Sign up with Apple
+                    </button>
+                </div>
+            </div>
+
+            <!-- Forgot Password Form -->
+            <div id="forgot" class="form-section">
+                <div class="forgot-header">
+                    <h2>Reset Password</h2>
+                    <p>Enter your email address and we'll send you a password reset link</p>
+                </div>
+
+                <div class="form-group">
+                    <label>Email Address</label>
+                    <div class="input-wrapper">
+                        <span class="input-icon">📧</span>
+                        <input type="email" id="forgot-email" placeholder="Enter your registered email">
+                    </div>
+                </div>
+
+                <button class="btn-primary" id="forgot-btn" onclick="handleForgotPassword()">Send Reset Link</button>
+                <br><br>
+                <button class="btn-secondary" onclick="showSection('signin')">Back to Sign In</button>
+            </div>
+
+            <!-- Dashboard Navigation -->
+            <div id="dashboard" class="form-section">
+                <div class="dashboard-header">
+                    <div class="dashboard-title">
+                        <h2>💼 Financial Dashboard</h2>
+                    </div>
+                </div>
+
+                <div class="dashboard-nav">
+                    <button class="nav-btn active" onclick="switchDashboardView('overview')">📊 Dashboard</button>
+                    <button class="nav-btn" onclick="switchDashboardView('add-expense')">➕ Add Expense</button>
+                    <button class="nav-btn" onclick="switchDashboardView('view-expenses')">📋 View Expenses</button>
+                    <button class="nav-btn" onclick="switchDashboardView('savings')">💰 Savings Planner</button>
+                    <button class="nav-btn" onclick="switchDashboardView('investment')">📈 Investment Calculator</button>
+                </div>
+
+                <!-- Overview Section -->
+                <div id="overview" class="dashboard-view active">
+                    <div class="overview-header">
+                        <h3>Welcome, <span id="dashboard-username"></span>! 🎉</h3>
+                        <p id="dashboard-date"></p>
+                    </div>
+                    <div class="stats-grid" id="stats-grid"></div>
+                </div>
+
+                <!-- Add Expense Section -->
+                <div id="add-expense" class="dashboard-view">
+                    <h3>➕ Add New Expense</h3>
+                    <div class="form-group">
+                        <label>Expense Category</label>
+                        <select id="expense-category">
+                            <option value="">Select a category</option>
+                            <option value="Food">🍔 Food & Dining</option>
+                            <option value="Transport">🚗 Transportation</option>
+                            <option value="Utilities">💡 Utilities</option>
+                            <option value="Entertainment">🎬 Entertainment</option>
+                            <option value="Shopping">🛍️ Shopping</option>
+                            <option value="Healthcare">⚕️ Healthcare</option>
+                            <option value="Other">📌 Other</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label>Amount (₹)</label>
+                        <input type="number" id="expense-amount" placeholder="Enter amount" min="0" step="0.01">
+                    </div>
+                    <div class="form-group">
+                        <label>Description</label>
+                        <input type="text" id="expense-description" placeholder="What was this for?">
+                    </div>
+                    <div class="form-group">
+                        <label>Date</label>
+                        <input type="date" id="expense-date">
+                    </div>
+                    <button class="btn-primary" onclick="addExpense()">Add Expense</button>
+                </div>
+
+                <!-- View Expenses Section -->
+                <div id="view-expenses" class="dashboard-view">
+                    <h3>📋 Your Expenses</h3>
+                    <div class="filters">
+                        <select id="filter-category" onchange="filterExpenses()">
+                            <option value="">All Categories</option>
+                            <option value="Food">🍔 Food & Dining</option>
+                            <option value="Transport">🚗 Transportation</option>
+                            <option value="Utilities">💡 Utilities</option>
+                            <option value="Entertainment">🎬 Entertainment</option>
+                            <option value="Shopping">🛍️ Shopping</option>
+                            <option value="Healthcare">⚕️ Healthcare</option>
+                            <option value="Other">📌 Other</option>
+                        </select>
+                        <button class="btn-secondary" onclick="deleteAllExpenses()">Clear All</button>
+                    </div>
+                    <div id="expenses-list"></div>
+                </div>
+
+                <!-- Savings Planner Section -->
+                <div id="savings" class="dashboard-view">
+                    <h3>💰 Savings Planner</h3>
+                    <div class="form-group">
+                        <label>Savings Goal Name</label>
+                        <input type="text" id="goal-name" placeholder="e.g., Vacation Fund">
+                    </div>
+                    <div class="form-group">
+                        <label>Target Amount (₹)</label>
+                        <input type="number" id="goal-target" placeholder="Enter target amount" min="0" step="0.01">
+                    </div>
+                    <div class="form-group">
+                        <label>Current Savings (₹)</label>
+                        <input type="number" id="goal-current" placeholder="Currently saved" min="0" step="0.01">
+                    </div>
+                    <div class="form-group">
+                        <label>Deadline</label>
+                        <input type="date" id="goal-deadline">
+                    </div>
+                    <button class="btn-primary" onclick="addSavingsGoal()">Add Goal</button>
+                    <hr style="margin: 30px 0;">
+                    <h4>Your Savings Goals</h4>
+                    <div id="savings-goals-list"></div>
+                </div>
+
+                <!-- Investment Calculator Section -->
+                <div id="investment" class="dashboard-view">
+                    <h3>📈 Investment Calculator</h3>
+                    <div class="form-group">
+                        <label>Initial Investment (₹)</label>
+                        <input type="number" id="invest-principal" placeholder="Enter initial amount" min="0" step="0.01">
+                    </div>
+                    <div class="form-group">
+                        <label>Annual Interest Rate (%)</label>
+                        <input type="number" id="invest-rate" placeholder="e.g., 5" min="0" step="0.01">
+                    </div>
+                    <div class="form-group">
+                        <label>Time Period (Years)</label>
+                        <input type="number" id="invest-years" placeholder="Enter number of years" min="0" step="0.1">
+                    </div>
+                    <div class="form-group">
+                        <label>Compounding Frequency</label>
+                        <select id="invest-compound">
+                            <option value="1">Annually</option>
+                            <option value="2">Semi-Annually</option>
+                            <option value="4">Quarterly</option>
+                            <option value="12">Monthly</option>
+                            <option value="365">Daily</option>
+                        </select>
+                    </div>
+                    <button class="btn-primary" onclick="calculateInvestment()">Calculate</button>
+                    <div id="investment-result" class="result-box" style="display:none; margin-top: 20px;"></div>
+                </div>
+            </div>
+
+            <!-- Help Section -->
+            <div id="help" class="form-section">
+                <div class="help-container">
+                    <button class="back-btn" onclick="showSection('dashboard')">← Back to Dashboard</button>
+                    <h2>❓ Help & Support</h2>
+                    <p class="help-intro">We're here to help! Find answers to common questions and learn how to use FinTrack.</p>
+
+                    <!-- Search Bar -->
+                    <div class="help-search">
+                        <input type="text" id="help-search-input" placeholder="🔍 Search help topics..." class="search-input">
+                    </div>
+
+                    <!-- FAQ Section -->
+                    <div class="help-section">
+                        <h3>📚 Frequently Asked Questions</h3>
+                        
+                        <div class="faq-item">
+                            <button class="faq-question" onclick="toggleFAQ(this)">
+                                🔐 How do I create an account?
+                                <span class="faq-icon">+</span>
+                            </button>
+                            <div class="faq-answer" style="display:none;">
+                                <p>To create an account, click on the "Sign Up" tab on the login page. Enter your username, email address, and a secure password (minimum 8 characters). You'll receive a verification email - click the link to verify your account. You can also sign up using Google, Microsoft, or Apple accounts.</p>
+                            </div>
+                        </div>
+
+                        <div class="faq-item">
+                            <button class="faq-question" onclick="toggleFAQ(this)">
+                                💰 How do I add expenses?
+                                <span class="faq-icon">+</span>
+                            </button>
+                            <div class="faq-answer" style="display:none;">
+                                <p>1. Go to Dashboard → Add Expense<br>2. Select a category (Food, Transport, Utilities, etc.)<br>3. Enter the amount<br>4. Add a description (optional)<br>5. Select the date<br>6. Click "Add Expense"<br><br>Your expense will appear in the View Expenses section immediately.</p>
+                            </div>
+                        </div>
+
+                        <div class="faq-item">
+                            <button class="faq-question" onclick="toggleFAQ(this)">
+                                📊 How does the Savings Planner work?
+                                <span class="faq-icon">+</span>
+                            </button>
+                            <div class="faq-answer" style="display:none;">
+                                <p>The Savings Planner helps you set and track financial goals:<br>1. Go to Dashboard → Savings Planner<br>2. Enter a goal name (e.g., "Vacation Fund")<br>3. Set your target amount<br>4. Enter how much you've already saved<br>5. Set a deadline<br>6. Click "Add Goal"<br><br>You can track multiple savings goals simultaneously and see your progress toward each goal.</p>
+                            </div>
+                        </div>
+
+                        <div class="faq-item">
+                            <button class="faq-question" onclick="toggleFAQ(this)">
+                                📈 How does the Investment Calculator work?
+                                <span class="faq-icon">+</span>
+                            </button>
+                            <div class="faq-answer" style="display:none;">
+                                <p>The Investment Calculator uses the compound interest formula to estimate your investment growth:<br>1. Enter your initial investment amount<br>2. Input the annual interest rate<br>3. Specify the time period in years<br>4. Choose compounding frequency (annually, quarterly, monthly, etc.)<br>5. Click "Calculate"<br><br>The calculator will show you the final amount and total interest earned.</p>
+                            </div>
+                        </div>
+
+                        <div class="faq-item">
+                            <button class="faq-question" onclick="toggleFAQ(this)">
+                                🔑 I forgot my password. What do I do?
+                                <span class="faq-icon">+</span>
+                            </button>
+                            <div class="faq-answer" style="display:none;">
+                                <p>Click on "Forgot Password?" on the Sign In page. Enter your registered email address, and we'll send you a password reset link. Click the link in your email, create a new password, and you'll be back in your account in seconds!</p>
+                            </div>
+                        </div>
+
+                        <div class="faq-item">
+                            <button class="faq-question" onclick="toggleFAQ(this)">
+                                🔄 How do I update my profile information?
+                                <span class="faq-icon">+</span>
+                            </button>
+                            <div class="faq-answer" style="display:none;">
+                                <p>Go to Settings (in the navigation menu) to update your profile. You can:<br>• Edit your full name<br>• View your email address<br>• Change your password<br>• Manage your preferences<br>• View account statistics<br><br>All changes are saved automatically.</p>
+                            </div>
+                        </div>
+
+                        <div class="faq-item">
+                            <button class="faq-question" onclick="toggleFAQ(this)">
+                                📱 Is FinTrack available on mobile devices?
+                                <span class="faq-icon">+</span>
+                            </button>
+                            <div class="faq-answer" style="display:none;">
+                                <p>Yes! FinTrack is fully responsive and works on all devices - smartphones, tablets, and desktops. The interface automatically adjusts for smaller screens. Use the hamburger menu (☰) on mobile to access navigation.</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Getting Started Guide -->
+                    <div class="help-section">
+                        <h3>🚀 Getting Started Guide</h3>
+                        <div class="guide-steps">
+                            <div class="guide-step">
+                                <div class="step-number">1</div>
+                                <div class="step-content">
+                                    <h4>Sign Up</h4>
+                                    <p>Create your account with email or social login</p>
+                                </div>
+                            </div>
+                            <div class="guide-step">
+                                <div class="step-number">2</div>
+                                <div class="step-content">
+                                    <h4>Complete Your Profile</h4>
+                                    <p>Add your full name and preferred currency in Settings</p>
+                                </div>
+                            </div>
+                            <div class="guide-step">
+                                <div class="step-number">3</div>
+                                <div class="step-content">
+                                    <h4>Log Your Expenses</h4>
+                                    <p>Start adding your daily expenses by category</p>
+                                </div>
+                            </div>
+                            <div class="guide-step">
+                                <div class="step-number">4</div>
+                                <div class="step-content">
+                                    <h4>Set Savings Goals</h4>
+                                    <p>Create goals and monitor your savings progress</p>
+                                </div>
+                            </div>
+                            <div class="guide-step">
+                                <div class="step-number">5</div>
+                                <div class="step-content">
+                                    <h4>Plan Investments</h4>
+                                    <p>Use the calculator to plan your investment strategy</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Troubleshooting & Tips -->
+                    <div class="help-section">
+                        <h3>🛠️ Troubleshooting & Tips</h3>
+                        <div class="tips-grid">
+                            <div class="tip-card">
+                                <h4>💡 Budget Wisely</h4>
+                                <p>Track your spending by category to identify where you can save money.</p>
+                            </div>
+                            <div class="tip-card">
+                                <h4>🎯 Set Realistic Goals</h4>
+                                <p>Break down large financial goals into smaller, achievable milestones.</p>
+                            </div>
+                            <div class="tip-card">
+                                <h4>📊 Review Regularly</h4>
+                                <p>Check your dashboard weekly to stay aware of your spending patterns.</p>
+                            </div>
+                            <div class="tip-card">
+                                <h4>🔐 Keep Data Safe</h4>
+                                <p>Never share your password. Use a strong password (8+ characters with mixed case).</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Contact Support -->
+                    <div class="help-section contact-section">
+                        <h3>📧 Need More Help?</h3>
+                        <p>If you couldn't find an answer above, feel free to contact our support team:</p>
+                        <div class="contact-methods">
+                            <div class="contact-method">
+                                <span class="contact-icon">✉️</span>
+                                <div class="contact-info">
+                                    <h4>Email Support</h4>
+                                    <p>support@fintrack.com</p>
+                                </div>
+                            </div>
+                            <div class="contact-method">
+                                <span class="contact-icon">💬</span>
+                                <div class="contact-info">
+                                    <h4>Live Chat</h4>
+                                    <p>Available Monday-Friday, 9 AM - 6 PM</p>
+                                </div>
+                            </div>
+                            <div class="contact-method">
+                                <span class="contact-icon">📞</span>
+                                <div class="contact-info">
+                                    <h4>Phone Support</h4>
+                                    <p>+1 (800) 123-4567</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Back to Dashboard Button -->
+                    <div style="margin-top: 30px; text-align: center;">
+                        <button class="btn-primary" onclick="showSection('dashboard')">← Back to Dashboard</button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Settings Section -->
+            <div id="settings" class="form-section">
+                <div class="settings-container">
+                    <button class="back-btn" onclick="showSection('dashboard')">← Back to Dashboard</button>
+                    <h2>⚙️ Settings</h2>
+
+                    <!-- Account Information Section -->
+                    <div class="settings-section">
+                        <h3>📋 Account Information</h3>
+                        <div class="settings-item">
+                            <div class="settings-label">Full Name</div>
+                            <div class="settings-content">
+                                <span id="settings-fullname">-</span>
+                                <button class="btn-edit" onclick="editFullName()">Edit</button>
+                            </div>
+                        </div>
+                        <div class="settings-item">
+                            <div class="settings-label">Email Address</div>
+                            <div class="settings-content">
+                                <span id="settings-email">-</span>
+                                <button class="btn-edit" onclick="editEmail()">Edit</button>
+                            </div>
+                        </div>
+                        <div class="settings-item">
+                            <div class="settings-label">Account Created</div>
+                            <div class="settings-content">
+                                <span id="settings-created">-</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Security Section -->
+                    <div class="settings-section">
+                        <h3>🔐 Security</h3>
+                        <div class="settings-item">
+                            <div class="settings-label">Password</div>
+                            <div class="settings-content">
+                                <span>Change your account password for better security</span>
+                                <button class="btn-primary-sm" onclick="openChangePasswordModal()">Change Password</button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Data Management Section -->
+                    <div class="settings-section">
+                        <h3>📊 Data Management</h3>
+                        <div class="settings-item">
+                            <div class="settings-label">Total Expenses</div>
+                            <div class="settings-content">
+                                <span id="stats-expenses">0</span>
+                            </div>
+                        </div>
+                        <div class="settings-item">
+                            <div class="settings-label">Total Savings Goals</div>
+                            <div class="settings-content">
+                                <span id="stats-savings">0</span>
+                            </div>
+                        </div>
+                        <div class="settings-item">
+                            <div class="settings-label">Total Investments</div>
+                            <div class="settings-content">
+                                <span id="stats-investments">0</span>
+                            </div>
+                        </div>
+                        <div class="warning-box">
+                            <p>⚠️ Warning: These actions cannot be undone</p>
+                            <button class="btn-danger-sm" onclick="clearAllData()">Clear All Data</button>
+                        </div>
+                    </div>
+
+                    <!-- Preferences Section -->
+                    <div class="settings-section">
+                        <h3>⚙️ Preferences</h3>
+                        <div class="settings-item">
+                            <div class="settings-label">Currency</div>
+                            <div class="settings-content">
+                                <select id="currency-select" class="currency-dropdown">
+                                    <option value="USD">USD ($)</option>
+                                    <option value="INR">INR (₹)</option>
+                                    <option value="EUR">EUR (€)</option>
+                                    <option value="GBP">GBP (£)</option>
+                                    <option value="JPY">JPY (¥)</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Session Section -->
+                    <div class="settings-section">
+                        <h3>🚪 Session</h3>
+                        <div class="settings-item">
+                            <div class="settings-label">Sign Out</div>
+                            <div class="settings-content">
+                                <span>End your current session and return to the login page</span>
+                                <button class="btn-secondary" onclick="handleNavigation('logout')">Sign Out</button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Danger Zone Section -->
+                    <div class="settings-section danger-zone">
+                        <h3>⚠️ Danger Zone</h3>
+                        <div class="settings-item">
+                            <div class="settings-label">Delete Account</div>
+                            <div class="settings-content">
+                                <span>Permanently delete your account and all associated data</span>
+                                <button class="btn-danger" onclick="handleDeleteAccount()">Delete Account</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Change Password Modal -->
+            <div id="changePasswordModal" class="modal">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h2>Change Password</h2>
+                        <button class="modal-close" onclick="closeChangePasswordModal()">&times;</button>
+                    </div>
+                    <div class="modal-body">
+                        <form id="changePasswordForm" onsubmit="saveNewPassword(event)">
+                            <div class="form-group">
+                                <label for="current-password">Current Password</label>
+                                <div class="input-wrapper">
+                                    <span class="input-icon">🔒</span>
+                                    <input type="password" id="current-password" placeholder="Enter current password" required>
+                                    <button type="button" class="password-toggle" onclick="togglePassword('current-password')">👁️</button>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label for="new-password">New Password</label>
+                                <div class="input-wrapper">
+                                    <span class="input-icon">🔒</span>
+                                    <input type="password" id="new-password" placeholder="Enter new password" required>
+                                    <button type="button" class="password-toggle" onclick="togglePassword('new-password')">👁️</button>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label for="confirm-password">Confirm New Password</label>
+                                <div class="input-wrapper">
+                                    <span class="input-icon">🔒</span>
+                                    <input type="password" id="confirm-password" placeholder="Confirm new password" required>
+                                    <button type="button" class="password-toggle" onclick="togglePassword('confirm-password')">👁️</button>
+                                </div>
+                            </div>
+                            <div class="modal-footer">
+                                <button type="button" class="btn-secondary" onclick="closeChangePasswordModal()">Cancel</button>
+                                <button type="submit" class="btn-primary">Update Password</button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Profile Section -->
+            <div id="profile" class="form-section">
+                <div class="profile-container">
+                    <button class="back-btn" onclick="showSection('dashboard')">← Back to Dashboard</button>
+                    <h2>👤 My Profile</h2>
+                    <div class="profile-info" id="profile-info"></div>
+                    <div class="profile-actions">
+                        <button class="btn-secondary" onclick="editProfile()">✏️ Edit Profile</button>
+                        <button class="btn-danger" onclick="handleDeleteAccount()">🗑️ Delete Account</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Edit Profile Modal -->
+        <div id="editProfileModal" class="modal">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h2>Edit Profile</h2>
+                    <button class="modal-close" onclick="closeEditProfileModal()">&times;</button>
+                </div>
+                <div class="modal-body">
+                    <form id="editProfileForm" onsubmit="saveProfileChanges(event)">
+                        <div class="form-group">
+                            <label for="edit-username">Username</label>
+                            <div class="input-wrapper">
+                                <span class="input-icon">👤</span>
+                                <input type="text" id="edit-username" placeholder="Enter new username" required>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label for="display-email">Email Address</label>
+                            <div class="input-wrapper">
+                                <span class="input-icon">📧</span>
+                                <input type="email" id="display-email" disabled>
+                            </div>
+                            <small style="color: #9ca3af; margin-top: 8px; display: block;">Email cannot be changed</small>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn-secondary" onclick="closeEditProfileModal()">Cancel</button>
+                            <button type="submit" class="btn-primary">Save Changes</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+
+        <!-- Footer -->
+        <div class="footer">
+            <p>Made by Naveena P, Prithika P & Priyamani D</p>
+        </div>
+    </div>
+
+    <!-- External JavaScript -->
+    <script src="script.js"></script>
+</body>
+</html>
